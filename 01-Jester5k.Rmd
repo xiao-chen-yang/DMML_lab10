@@ -38,7 +38,7 @@ summary(colCounts(Jester5k)) #No. users rated a joke
 hist(getRatings(Jester5k), breaks=100) #getRating(): extract a vector with all non-missing ratings from a rating matrix
 ```
 
-##Build recommender systems and make predictions
+## Build recommender systems and make predictions
 
 First, let's build a user-based collaborative filtering (UBCF) system to predict the ratings and the top-$N$ recommendations. Here, we use Pearson correlation to measure the similarity between users and select the nearest 5 users to form a neighbourhood. 
 ```{r}

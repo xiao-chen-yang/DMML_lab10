@@ -29,7 +29,7 @@
   
   
 <link rel="prev" href="index.html"/>
-<link rel="next" href="exploratory-data-analysis.html"/>
+
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -141,13 +141,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#build-recommender-systems-and-make-predictions"><i class="fa fa-check"></i><b>1.1</b> Build recommender systems and make predictions</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#evaluate-recommender-systems"><i class="fa fa-check"></i><b>1.2</b> Evaluate recommender systems</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html"><i class="fa fa-check"></i><b>2</b> Example 1: Jester5k</a></li>
-<li class="chapter" data-level="3" data-path="exploratory-data-analysis.html"><a href="exploratory-data-analysis.html"><i class="fa fa-check"></i><b>3</b> Exploratory data analysis</a></li>
-<li class="chapter" data-level="4" data-path="build-recommender-systems-and-make-predictions-1.html"><a href="build-recommender-systems-and-make-predictions-1.html"><i class="fa fa-check"></i><b>4</b> Build recommender systems and make predictions</a></li>
-<li class="chapter" data-level="5" data-path="evaluate-recommender-systems-using-built-in-functions.html"><a href="evaluate-recommender-systems-using-built-in-functions.html"><i class="fa fa-check"></i><b>5</b> Evaluate recommender systems using built-in functions</a>
+<li class="chapter" data-level="2" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html"><i class="fa fa-check"></i><b>2</b> Example 1: Jester5k</a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="evaluate-recommender-systems-using-built-in-functions.html"><a href="evaluate-recommender-systems-using-built-in-functions.html#evaluate-predicted-ratings"><i class="fa fa-check"></i><b>5.1</b> Evaluate predicted ratings</a></li>
-<li class="chapter" data-level="5.2" data-path="evaluate-recommender-systems-using-built-in-functions.html"><a href="evaluate-recommender-systems-using-built-in-functions.html#evaluate-top-n-recommendations"><i class="fa fa-check"></i><b>5.2</b> Evaluate top-N recommendations</a></li>
+<li class="chapter" data-level="2.1" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html#exploratory-data-analysis"><i class="fa fa-check"></i><b>2.1</b> Exploratory data analysis</a></li>
+<li class="chapter" data-level="2.2" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html#evaluate-recommender-systems-using-built-in-functions"><i class="fa fa-check"></i><b>2.2</b> Evaluate recommender systems using built-in functions</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html#evaluate-predicted-ratings"><i class="fa fa-check"></i><b>2.2.1</b> Evaluate predicted ratings</a></li>
+<li class="chapter" data-level="2.2.2" data-path="example-1-jester5k.html"><a href="example-1-jester5k.html#evaluate-top-n-recommendations"><i class="fa fa-check"></i><b>2.2.2</b> Evaluate top-N recommendations</a></li>
+</ul></li>
 </ul></li>
 </ul>
 
@@ -175,6 +176,317 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <blockquote>
 <p>Reference: <a href="https://cran.r-project.org/web/packages/recommenderlab/vignettes/recommenderlab.pdf">Section 5.4 of the <code>recommenderlab</code> package vignette</a></p>
 </blockquote>
+<div id="exploratory-data-analysis" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> Exploratory data analysis<a href="example-1-jester5k.html#exploratory-data-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>First, let's investigate the data a bit. Revise the R code in the lecture note and answer the following questions:</p>
+<ul>
+<li><p>How many items (i.e. jokes) are there in this dataset? <input class='webex-solveme nospaces' size='3' data-answer='["100"]'/></p></li>
+<li><p>On average, how many jokes do the users rate? You can report the median value in this case to get an integer value. <input class='webex-solveme nospaces' size='2' data-answer='["72"]'/></p></li>
+<li><p>On average, how many ratings have been made to each joke? <input class='webex-solveme nospaces' size='4' data-answer='["3632"]'/></p></li>
+</ul>
+<div class="webex-solution">
+<button>
+Hint
+</button>
+<p>You can get information about the dataset by using the <code>cat()</code> function. <code>rowCounts</code> and <code>colCounts</code> can be useful to get information about items and users.</p>
+</div>
+<div class="webex-solution">
+<button>
+Solution
+</button>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="example-1-jester5k.html#cb5-1" tabindex="-1"></a><span class="fu">cat</span>(JesterJokes[<span class="dv">1</span>]) <span class="co">#Joke information</span></span></code></pre></div>
+<pre><code>## A man visits the doctor. The doctor says &quot;I have bad news for you.You have cancer and Alzheimer&#39;s disease&quot;. The man replies &quot;Well,thank God I don&#39;t have cancer!&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="example-1-jester5k.html#cb7-1" tabindex="-1"></a>Jester5k</span></code></pre></div>
+<pre><code>## 5000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 363209 ratings.</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="example-1-jester5k.html#cb9-1" tabindex="-1"></a>Jester5k<span class="sc">@</span>data[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>## 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
+##           j1    j2   j3    j4    j5
+## u7452  -1.60 -3.54 4.17  1.84 -0.44
+## u8016   2.04 -9.42 5.53 -3.83 -8.50
+## u7162   5.53 -9.08 0.49 -4.71 -1.07
+## u8086   .     .    .     .    -0.39
+## u23653  4.47  6.80 8.20  6.89  6.55</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="example-1-jester5k.html#cb11-1" tabindex="-1"></a><span class="fu">image</span>(Jester5k<span class="sc">@</span>data[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>])</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="example-1-jester5k.html#cb12-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">rowCounts</span>(Jester5k)) <span class="co">#No. jokes rated by a user</span></span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   36.00   53.00   72.00   72.64  100.00  100.00</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="example-1-jester5k.html#cb14-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">colCounts</span>(Jester5k)) <span class="co">#No. users rated a joke</span></span></code></pre></div>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1732    2082    3971    3632    4957    5000</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="example-1-jester5k.html#cb16-1" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">getRatings</span>(Jester5k), <span class="at">breaks=</span><span class="dv">100</span>) <span class="co">#getRating(): extract a vector with all non-missing ratings from a rating matrix</span></span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+</div>
+<p>##Build recommender systems and make predictions</p>
+<p>First, let's build a user-based collaborative filtering (UBCF) system to predict the ratings and the top-<span class="math inline">\(N\)</span> recommendations. Here, we use Pearson correlation to measure the similarity between users and select the nearest 5 users to form a neighbourhood.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="example-1-jester5k.html#cb17-1" tabindex="-1"></a>Jester_UBCF <span class="ot">&lt;-</span> <span class="fu">Recommender</span>(Jester5k, <span class="at">method=</span><span class="st">&quot;UBCF&quot;</span>,</span>
+<span id="cb17-2"><a href="example-1-jester5k.html#cb17-2" tabindex="-1"></a>                           <span class="at">param=</span><span class="fu">list</span>(<span class="at">method=</span><span class="st">&quot;pearson&quot;</span>,<span class="at">nn=</span><span class="dv">5</span>))</span>
+<span id="cb17-3"><a href="example-1-jester5k.html#cb17-3" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="example-1-jester5k.html#cb17-4" tabindex="-1"></a><span class="co"># Predict ratings only for unrated items</span></span>
+<span id="cb17-5"><a href="example-1-jester5k.html#cb17-5" tabindex="-1"></a>Jester_UBCF_rating <span class="ot">&lt;-</span> <span class="fu">predict</span>(Jester_UBCF, Jester5k, <span class="at">type=</span><span class="st">&quot;ratings&quot;</span>)</span>
+<span id="cb17-6"><a href="example-1-jester5k.html#cb17-6" tabindex="-1"></a>Jester_UBCF_rating<span class="sc">@</span>data[<span class="dv">5</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] </span></code></pre></div>
+<pre><code>## 6 x 10 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                                                            
+## u23653  .            .          .        .        . .        . .   .       
+## u9196  -0.07931507 -11.389315 -11.09932 -8.529315 . 1.979581 . . -11.969315
+## u623    .            .          .        .        . .        . .   .       
+## u15241 -6.58902953  -9.318072 -10.24682 -7.785684 . .        . .  -5.911201
+## u10885  .            .          .        .        . .        . .   .       
+## u934    .            .          .        .        . .        . .   .       
+##                
+## u23653 .       
+## u9196  2.338837
+## u623   .       
+## u15241 .       
+## u10885 .       
+## u934   .</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="example-1-jester5k.html#cb19-1" tabindex="-1"></a><span class="co"># Predict ratings for all items </span></span>
+<span id="cb19-2"><a href="example-1-jester5k.html#cb19-2" tabindex="-1"></a>Jester_UBCF_ratMat <span class="ot">&lt;-</span> <span class="fu">predict</span>(Jester_UBCF, Jester5k, <span class="at">type=</span><span class="st">&quot;ratingMatrix&quot;</span>)</span>
+<span id="cb19-3"><a href="example-1-jester5k.html#cb19-3" tabindex="-1"></a>Jester_UBCF_ratMat<span class="sc">@</span>data[<span class="dv">5</span><span class="sc">:</span><span class="dv">10</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>] </span></code></pre></div>
+<pre><code>## 6 x 10 sparse Matrix of class &quot;dgCMatrix&quot;
+##                                                                        
+## u23653  4.47000000   6.500162   8.20000  6.890000   4.4607620  6.249957
+## u9196  -0.07931507 -11.389315 -11.09932 -8.529315  -0.9528821  1.979581
+## u623    2.82000000   8.443053  -3.25000 -4.900000   0.5686730  8.790000
+## u15241 -6.58902953  -9.318072 -10.24682 -7.785684 -10.9454347 -8.377496
+## u10885  7.23000000   2.140000   3.11000  0.830000   4.7309487  5.455884
+## u934    2.28000000   5.050000   3.25000 -4.030000  -2.5496590 -1.410000
+##                                                  
+## u23653  5.6891707  3.2277391  -7.860000  1.682018
+## u9196   0.9858209  2.6325211 -11.969315  2.338837
+## u623   -1.3240298 -2.2544086  -2.280000  0.190000
+## u15241 -6.2988748 -6.6407474  -5.911201 -7.945736
+## u10885 -4.5946605  2.0570513   3.300000  3.365357
+## u934   -5.2687146  0.0676189  -2.620000  3.395148</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="example-1-jester5k.html#cb21-1" tabindex="-1"></a><span class="co"># Recommend top-3 items.</span></span>
+<span id="cb21-2"><a href="example-1-jester5k.html#cb21-2" tabindex="-1"></a>Jester_UBCF_topN <span class="ot">&lt;-</span> <span class="fu">predict</span>(Jester_UBCF, Jester5k, <span class="at">type=</span><span class="st">&quot;topNList&quot;</span>, <span class="at">n=</span><span class="dv">3</span>)</span>
+<span id="cb21-3"><a href="example-1-jester5k.html#cb21-3" tabindex="-1"></a><span class="fu">getList</span>(Jester_UBCF_topN)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
+<pre><code>## $`0`
+## character(0)
+## 
+## $`1`
+## character(0)
+## 
+## $`2`
+## [1] &quot;j88&quot; &quot;j86&quot; &quot;j72&quot;
+## 
+## $`3`
+## [1] &quot;j93&quot; &quot;j76&quot; &quot;j86&quot;
+## 
+## $`4`
+## character(0)</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="example-1-jester5k.html#cb23-1" tabindex="-1"></a><span class="co"># some users have rated all items and thus the prediction returns &quot;character(0)&quot;</span></span></code></pre></div>
+<p>Let's now move on to an item-based collaborative filtering (IBCF) system.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="example-1-jester5k.html#cb24-1" tabindex="-1"></a>Jester_IBCF <span class="ot">&lt;-</span> <span class="fu">Recommender</span>(Jester5k, <span class="at">method=</span><span class="st">&quot;IBCF&quot;</span>, <span class="at">param=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">20</span>)) <span class="co">#k: no. similar items</span></span></code></pre></div>
+<p>You can revise the previous codes on the UBCF system to predict ratings and top-<span class="math inline">\(N\)</span> items with the new IBCF system.</p>
+<p>Finally, we can perform UV-decomposition on the rating matrix. Strictly speaking, the package implements the idea of matrix factorization using singular value decomposition (SVD), which is numerically more robust and efficient. The key parameter for matrix decomposition (either UV or SVD) is the latent dimension, which is set as 3 in the following code.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="example-1-jester5k.html#cb25-1" tabindex="-1"></a>Jester_UV <span class="ot">&lt;-</span> <span class="fu">Recommender</span>(Jester5k,<span class="at">method=</span><span class="st">&quot;SVDF&quot;</span>, <span class="at">param=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">3</span>)) <span class="co">#k: latent dimension</span></span>
+<span id="cb25-2"><a href="example-1-jester5k.html#cb25-2" tabindex="-1"></a><span class="fu">dim</span>(Jester_UV<span class="sc">@</span>model<span class="sc">$</span>svd<span class="sc">$</span>U)</span></code></pre></div>
+<pre><code>## [1] 5000    3</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="example-1-jester5k.html#cb27-1" tabindex="-1"></a><span class="fu">dim</span>(Jester_UV<span class="sc">@</span>model<span class="sc">$</span>svd<span class="sc">$</span>V)</span></code></pre></div>
+<pre><code>## [1] 100   3</code></pre>
+</div>
+<div id="evaluate-recommender-systems-using-built-in-functions" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Evaluate recommender systems using built-in functions<a href="example-1-jester5k.html#evaluate-recommender-systems-using-built-in-functions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="evaluate-predicted-ratings" class="section level3 hasAnchor" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Evaluate predicted ratings<a href="example-1-jester5k.html#evaluate-predicted-ratings" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We evaluate the three recommendation systems using 10-fold cross-validation. For the test set, 5 items will be given to the recommender algorithm to make the prediction and the rest of items will be held out for computing the error. Below is an example on evaluating UBCF.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="example-1-jester5k.html#cb29-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb29-2"><a href="example-1-jester5k.html#cb29-2" tabindex="-1"></a>Jester_eval <span class="ot">&lt;-</span> <span class="fu">evaluationScheme</span>(Jester5k, <span class="at">method=</span><span class="st">&quot;cross-validation&quot;</span>, <span class="at">train=</span><span class="dv">10</span>, <span class="at">given=</span><span class="dv">5</span>)</span>
+<span id="cb29-3"><a href="example-1-jester5k.html#cb29-3" tabindex="-1"></a>Jester_eval</span></code></pre></div>
+<pre><code>## Evaluation scheme with 5 items given
+## Method: &#39;cross-validation&#39; with 10 run(s).
+## Good ratings: NA
+## Data set: 5000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 363209 ratings.</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="example-1-jester5k.html#cb31-1" tabindex="-1"></a>UV_results <span class="ot">&lt;-</span> <span class="fu">evaluate</span>(Jester_eval, <span class="at">method=</span><span class="st">&quot;UBCF&quot;</span>, <span class="at">type=</span><span class="st">&quot;ratings&quot;</span>,</span>
+<span id="cb31-2"><a href="example-1-jester5k.html#cb31-2" tabindex="-1"></a>                       <span class="at">param=</span><span class="fu">list</span>(<span class="at">method=</span><span class="st">&quot;pearson&quot;</span>, <span class="at">nn=</span><span class="dv">20</span>))</span></code></pre></div>
+<pre><code>## UBCF run fold/sample [model time/prediction time]
+##   1  [0sec/1.42sec] 
+##   2  [0.01sec/1.39sec] 
+##   3  [0sec/1.3sec] 
+##   4  [0sec/1.5sec] 
+##   5  [0.02sec/1.47sec] 
+##   6  [0.02sec/1.55sec] 
+##   7  [0.01sec/1.25sec] 
+##   8  [0sec/1.53sec] 
+##   9  [0.02sec/1.56sec] 
+##   10  [0.03sec/1.63sec]</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="example-1-jester5k.html#cb33-1" tabindex="-1"></a><span class="fu">getResults</span>(UV_results)</span></code></pre></div>
+<pre><code>## [[1]]
+##          RMSE      MSE      MAE
+## [1,] 5.193657 26.97408 4.056888
+## 
+## [[2]]
+##         RMSE    MSE      MAE
+## [1,] 5.25338 27.598 4.095921
+## 
+## [[3]]
+##          RMSE     MSE      MAE
+## [1,] 5.240763 27.4656 4.075165
+## 
+## [[4]]
+##          RMSE      MSE      MAE
+## [1,] 5.047052 25.47273 3.923499
+## 
+## [[5]]
+##          RMSE      MSE     MAE
+## [1,] 5.153095 26.55439 4.02708
+## 
+## [[6]]
+##          RMSE      MSE      MAE
+## [1,] 5.241926 27.47779 4.097877
+## 
+## [[7]]
+##          RMSE      MSE      MAE
+## [1,] 5.219711 27.24538 4.060484
+## 
+## [[8]]
+##          RMSE      MSE      MAE
+## [1,] 5.108431 26.09607 3.972254
+## 
+## [[9]]
+##         RMSE      MSE      MAE
+## [1,] 5.25738 27.64005 4.088578
+## 
+## [[10]]
+##          RMSE      MSE      MAE
+## [1,] 5.192933 26.96655 4.089866</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="example-1-jester5k.html#cb35-1" tabindex="-1"></a><span class="fu">avg</span>(UV_results)</span></code></pre></div>
+<pre><code>##          RMSE      MSE      MAE
+## [1,] 5.190833 26.94906 4.048761</code></pre>
+<p>When evaluating multiple recommender algorithms, we can create a list of algorithms and evaluate them all together. The following R code will take a while to complete.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="example-1-jester5k.html#cb37-1" tabindex="-1"></a>algs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb37-2"><a href="example-1-jester5k.html#cb37-2" tabindex="-1"></a>  <span class="st">&quot;UBCF&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">name=</span><span class="st">&quot;UBCF&quot;</span>, <span class="at">param=</span><span class="fu">list</span>(<span class="at">method=</span><span class="st">&quot;pearson&quot;</span>,<span class="at">nn=</span><span class="dv">20</span>)),</span>
+<span id="cb37-3"><a href="example-1-jester5k.html#cb37-3" tabindex="-1"></a>  <span class="st">&quot;IBCF&quot;</span> <span class="ot">=</span> <span class="fu">list</span>(<span class="at">name=</span><span class="st">&quot;IBCF&quot;</span>, <span class="at">param=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">5</span>)),</span>
+<span id="cb37-4"><a href="example-1-jester5k.html#cb37-4" tabindex="-1"></a>  <span class="st">&quot;UV&quot;</span>   <span class="ot">=</span> <span class="fu">list</span>(<span class="at">name=</span><span class="st">&quot;SVDF&quot;</span>, <span class="at">param=</span><span class="fu">list</span>(<span class="at">k=</span><span class="dv">5</span>))</span>
+<span id="cb37-5"><a href="example-1-jester5k.html#cb37-5" tabindex="-1"></a>)</span>
+<span id="cb37-6"><a href="example-1-jester5k.html#cb37-6" tabindex="-1"></a>Jester_results <span class="ot">&lt;-</span> <span class="fu">evaluate</span>(Jester_eval, algs, <span class="at">type=</span><span class="st">&quot;ratings&quot;</span>)</span></code></pre></div>
+<pre><code>## UBCF run fold/sample [model time/prediction time]
+##   1  [0.01sec/1.35sec] 
+##   2  [0sec/1.13sec] 
+##   3  [0.02sec/1.52sec] 
+##   4  [0sec/1.83sec] 
+##   5  [0sec/1.68sec] 
+##   6  [0.02sec/1.39sec] 
+##   7  [0.02sec/1.58sec] 
+##   8  [0sec/1.23sec] 
+##   9  [0sec/1.19sec] 
+##   10  [0sec/1.34sec] 
+## IBCF run fold/sample [model time/prediction time]
+##   1  [0.14sec/0sec] 
+##   2  [0.2sec/0sec] 
+##   3  [0.16sec/0sec] 
+##   4  [0.2sec/0.01sec] 
+##   5  [0.14sec/0sec] 
+##   6  [0.21sec/0sec] 
+##   7  [0.13sec/0.02sec] 
+##   8  [0.15sec/0sec] 
+##   9  [0.07sec/0sec] 
+##   10  [0.11sec/0sec] 
+## SVDF run fold/sample [model time/prediction time]
+##   1  [27.23sec/1.35sec] 
+##   2  [24.07sec/1.07sec] 
+##   3  [24.84sec/0.74sec] 
+##   4  [22.26sec/0.91sec] 
+##   5  [24.94sec/0.67sec] 
+##   6  [23.67sec/1.02sec] 
+##   7  [25.94sec/0.8sec] 
+##   8  [25.18sec/0.77sec] 
+##   9  [19.55sec/0.54sec] 
+##   10  [21.95sec/0.78sec]</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="example-1-jester5k.html#cb39-1" tabindex="-1"></a><span class="co"># getResults(Jester_results$UBCF)</span></span>
+<span id="cb39-2"><a href="example-1-jester5k.html#cb39-2" tabindex="-1"></a><span class="co"># getResults(Jester_results$IBCF)</span></span>
+<span id="cb39-3"><a href="example-1-jester5k.html#cb39-3" tabindex="-1"></a><span class="co"># getResults(Jester_results$UV)</span></span>
+<span id="cb39-4"><a href="example-1-jester5k.html#cb39-4" tabindex="-1"></a><span class="fu">avg</span>(Jester_results)</span></code></pre></div>
+<pre><code>## $UBCF
+##          RMSE      MSE      MAE
+## [1,] 5.190833 26.94906 4.048761
+## 
+## $IBCF
+##          RMSE      MSE      MAE
+## [1,] 5.552533 30.84357 3.997202
+## 
+## $UV
+##          RMSE      MSE      MAE
+## [1,] 5.372767 28.87444 4.060785</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="example-1-jester5k.html#cb41-1" tabindex="-1"></a><span class="fu">plot</span>(Jester_results, <span class="at">legend=</span><span class="st">&quot;topright&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+</div>
+<div id="evaluate-top-n-recommendations" class="section level3 hasAnchor" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Evaluate top-N recommendations<a href="example-1-jester5k.html#evaluate-top-n-recommendations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Given our data is a real rating matrix, we need to convert it into a binary matrix in order to evaluate if the top-<span class="math inline">\(N\)</span> recommended items will be liked by the user. This conversion is achieved by using the argument <code>goodRating</code>, which is a threshold on the actual ratings; values at or above the threshold is considered to be liked by the user and vice versa. In other words, an item in the topNList is considered a true positive if it has a rating of <code>goodRating</code> or better in the observed data.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="example-1-jester5k.html#cb42-1" tabindex="-1"></a>Jester_eval2 <span class="ot">&lt;-</span> <span class="fu">evaluationScheme</span>(Jester5k, <span class="at">method=</span><span class="st">&quot;cross&quot;</span>, <span class="at">k=</span><span class="dv">5</span>, <span class="at">given=</span><span class="sc">-</span><span class="dv">5</span>,</span>
+<span id="cb42-2"><a href="example-1-jester5k.html#cb42-2" tabindex="-1"></a>                                 <span class="at">goodRating=</span><span class="dv">0</span>) </span>
+<span id="cb42-3"><a href="example-1-jester5k.html#cb42-3" tabindex="-1"></a>Jester_eval2</span></code></pre></div>
+<pre><code>## Evaluation scheme using all-but-5 items
+## Method: &#39;cross-validation&#39; with 5 run(s).
+## Good ratings: &gt;=0.000000
+## Data set: 5000 x 100 rating matrix of class &#39;realRatingMatrix&#39; with 363209 ratings.</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="example-1-jester5k.html#cb44-1" tabindex="-1"></a>Jester_results2 <span class="ot">&lt;-</span> <span class="fu">evaluate</span>(Jester_eval2, algs, <span class="at">type=</span><span class="st">&quot;topNList&quot;</span>,</span>
+<span id="cb44-2"><a href="example-1-jester5k.html#cb44-2" tabindex="-1"></a>                            <span class="at">n=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="dv">10</span>))</span></code></pre></div>
+<pre><code>## UBCF run fold/sample [model time/prediction time]
+##   1  [0sec/2.9sec] 
+##   2  [0.02sec/2.51sec] 
+##   3  [0sec/3.32sec] 
+##   4  [0sec/2.96sec] 
+##   5  [0sec/3.51sec] 
+## IBCF run fold/sample [model time/prediction time]
+##   1  [0.11sec/0.05sec] 
+##   2  [0.12sec/0.11sec] 
+##   3  [0.14sec/0.08sec] 
+##   4  [0.17sec/0.07sec] 
+##   5  [0.17sec/0.06sec] 
+## SVDF run fold/sample [model time/prediction time]
+##   1  [20.29sec/0.93sec] 
+##   2  [22.51sec/0.99sec] 
+##   3  [24.35sec/1.08sec] 
+##   4  [27.46sec/0.99sec] 
+##   5  [25.86sec/0.99sec]</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="example-1-jester5k.html#cb46-1" tabindex="-1"></a><span class="co"># n: the number of items in top-N list</span></span>
+<span id="cb46-2"><a href="example-1-jester5k.html#cb46-2" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="example-1-jester5k.html#cb46-3" tabindex="-1"></a><span class="fu">avg</span>(Jester_results2)</span></code></pre></div>
+<pre><code>## $UBCF
+##          TP     FP     FN      TN       N precision    recall       TPR
+## [1,] 0.2914 0.7078 2.6972 28.6618 32.3582 0.2916296 0.0993973 0.0993973
+## [2,] 0.8690 2.1170 2.1196 27.2526 32.3582 0.2920279 0.2868698 0.2868698
+## [3,] 1.3626 3.5368 1.6260 25.8328 32.3582 0.2841101 0.4373338 0.4373338
+## [4,] 2.0100 6.9376 0.9786 22.4320 32.3582 0.2644796 0.6318470 0.6318470
+##             FPR  n
+## [1,] 0.04372079  1
+## [2,] 0.14676343  3
+## [3,] 0.26047798  5
+## [4,] 0.43986712 10
+## 
+## $IBCF
+##          TP     FP     FN      TN       N precision     recall        TPR
+## [1,] 0.2818 0.7178 2.7068 28.6518 32.3582 0.2819127 0.09452575 0.09452575
+## [2,] 0.8548 2.1352 2.1338 27.2344 32.3582 0.2865485 0.27604460 0.27604460
+## [3,] 1.3402 3.5744 1.6484 25.7952 32.3582 0.2775938 0.42242109 0.42242109
+## [4,] 2.0882 6.9336 0.9004 22.4360 32.3582 0.2671422 0.65879285 0.65879285
+##             FPR  n
+## [1,] 0.04123933  1
+## [2,] 0.14086329  3
+## [3,] 0.25706582  5
+## [4,] 0.44742267 10
+## 
+## $UV
+##          TP     FP     FN      TN       N precision    recall       TPR
+## [1,] 0.3448 0.6548 2.6438 28.7148 32.3582 0.3449417 0.1167492 0.1167492
+## [2,] 0.9736 2.0164 2.0150 27.3532 32.3582 0.3261658 0.3218409 0.3218409
+## [3,] 1.4424 3.4722 1.5462 25.8974 32.3582 0.2980438 0.4591529 0.4591529
+## [4,] 2.0330 6.9890 0.9556 22.3806 32.3582 0.2616186 0.6278107 0.6278107
+##             FPR  n
+## [1,] 0.03914858  1
+## [2,] 0.13483907  3
+## [3,] 0.25273000  5
+## [4,] 0.44912709 10</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="example-1-jester5k.html#cb48-1" tabindex="-1"></a><span class="fu">plot</span>(Jester_results2, <span class="at">annotate=</span><span class="dv">1</span>, <span class="at">legend=</span><span class="st">&quot;topleft&quot;</span>)</span></code></pre></div>
+<p><img src="main_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The above example covers collaborative filtering recommender systems. If you are interested in content-based recommender systems, the following example may be studied:
+<a href="https://michael.hahsler.net/other_courses/ICMA_Recommendation_Tools/code/content-based.html#calculate-content-based-item-similarity" class="uri">https://michael.hahsler.net/other_courses/ICMA_Recommendation_Tools/code/content-based.html#calculate-content-based-item-similarity</a></p>
+
+</div>
+</div>
 </div>
 <script>
 
@@ -352,8 +664,8 @@ window.onload = function() {
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="exploratory-data-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
