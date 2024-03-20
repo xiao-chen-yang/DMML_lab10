@@ -1,0 +1,236 @@
+---
+title: "STATS5099 Data Mining and Machine Learning"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+biblio-style: apalike
+link-citations: yes
+---
+```{r include=FALSE, cache=FALSE}
+suppressPackageStartupMessages({
+  library(webexercises)
+})
+
+knitr::knit_hooks$set(webex.hide = function(before, options, envir) {
+  if (before) {
+    if (is.character(options$webex.hide)) {
+      hide(options$webex.hide)
+    } else {
+      hide()
+    }
+  } else {
+    unhide()
+  }
+})
+```
+
+```{r setup, include = FALSE}
+library(webexercises)
+library(tinytex)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+knitr::opts_chunk$set(echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE)
+
+library(stats)
+library(cluster)
+```
+
+
+```{r include=FALSE, echo=FALSE}
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
+
+
+# Welcome to DMML Lab 10
+
+In week 10, we studied recommendation systems. In today's lab, we will look at how to build a user-based collaborative filtering system, an item-based collaborative filtering system, and UV decomposition-based system. In addition, we will evaluate these three recommendation systems for both rating predictions and top-$N$ recommendations. 
+
+## Build recommender systems and make predictions
+
+We will use the R package `recommenderlab` to build the collaborative filtering recommendation system. The package supports multiple algorithms. You can find out the names of each method and the associated parameters as follows: 
+```{r eval=FALSE}
+library(recommenderlab)
+# Methods and default parameters in the package
+recommenderRegistry$get_entry_names()
+# IBCF stands for item-based collaborative filtering
+# UBCF stands for user-based collaborative filtering
+# SVDF stands for funk singular value decomposition (UV-decomposition-based collaborative filtering)
+recommenderRegistry$get_entry("UBCF",dataType="realRatingMatrix")
+# Make sure you understand the parameters: methods, nn, weighted and normalize
+# other options of methods: "cosine", "pearson", "jaccard"
+```
+
+## Evaluate recommender systems 
+
+To evaluate the recommender systems, we first need to clearly define the evaluation scheme, such as using training-test split or cross-validation, the parameters associated with training-test split (i.e. the proportion of training data) or cross-validation (i.e. the number of folds), the number of item withheld in the test set.  
+
+```{r eval=FALSE}
+evaluationScheme(data, method, train, k, given, goodRating)
+# method: split, cross-validation
+# train: fraction of the data set used for training
+# k: number of folds to run the evaluation
+# given: single number of items given for evaluation. Positive values implement the given-x protocol, and negative values implement the all-but-x protocol. 
+# goodRating: threshold at which ratings are considered good for evaluation. E.g., with goodRating=3 all items with actual user rating of greater or equal 3 are considered positives in the evaluation process.
+```
+
+After that, we can evaluate a single or a list of recommendation systems. In particular, for the task of predicting ratings, MAE (mean absolute error), MSE (mean squared error) and RMSE (root mean squared error) are calculated. For the task of predicting the top-$N$ items, binary classification metrics, such as precision, recall, true positive rate (TPR), false positive rate (FPR), are returned. 
+
+```{r eval=FALSE}
+evaluate(evaluationScheme, method, type)
+# type: "ratings", "topNList"
+```
+
+
+<!--chapter:end:index.Rmd-->
+
+```{r include=FALSE, cache=FALSE}
+suppressPackageStartupMessages({
+  library(webexercises)
+})
+
+knitr::knit_hooks$set(webex.hide = function(before, options, envir) {
+  if (before) {
+    if (is.character(options$webex.hide)) {
+      hide(options$webex.hide)
+    } else {
+      hide()
+    }
+  } else {
+    unhide()
+  }
+})
+```
+# Example 1: Jester5k
+
+This example is designed to illustrate the process of building recommender systems. The dataset we will be investigating is the Jester5k data, which contains a sample of 5000 users from the anonymous ratings data from the Jester Online Joke Recommender System collected between April 1999 and May 2003. The data set contains ratings for 100 jokes on a scale from −10 to +10. 
+
+The dataset is available in the `recommenderlab` package:
+
+```{r warning=FALSE}
+library(recommenderlab)
+data(Jester5k)
+```
+
+> Reference: [Section 5.4 of the `recommenderlab` package vignette](https://cran.r-project.org/web/packages/recommenderlab/vignettes/recommenderlab.pdf)
+
+## Exploratory data analysis
+
+First, let's investigate the data a bit. Revise the R code in the lecture note and answer the following questions:
+
+* How many items (i.e. jokes) are there in this dataset? `r fitb(100)`
+
+* On average, how many jokes do the users rate? You can report the median value in this case to get an integer value. `r fitb(72)`
+
+* On average, how many ratings have been made to each joke? `r fitb(3632)`
+
+`r hide("Hint")`
+You can get information about the dataset by using the `cat()` function. `rowCounts` and `colCounts` can be useful to get information about items and users. 
+`r unhide()`
+
+```{r warning=FALSE, webex.hide="Solution"}
+cat(JesterJokes[1]) #Joke information
+
+Jester5k
+Jester5k@data[1:5,1:5]
+image(Jester5k@data[1:5,1:5])
+
+summary(rowCounts(Jester5k)) #No. jokes rated by a user
+summary(colCounts(Jester5k)) #No. users rated a joke
+
+hist(getRatings(Jester5k), breaks=100) #getRating(): extract a vector with all non-missing ratings from a rating matrix
+```
+
+##Build recommender systems and make predictions
+
+First, let's build a user-based collaborative filtering (UBCF) system to predict the ratings and the top-$N$ recommendations. Here, we use Pearson correlation to measure the similarity between users and select the nearest 5 users to form a neighbourhood. 
+```{r}
+Jester_UBCF <- Recommender(Jester5k, method="UBCF",
+                           param=list(method="pearson",nn=5))
+
+# Predict ratings only for unrated items
+Jester_UBCF_rating <- predict(Jester_UBCF, Jester5k, type="ratings")
+Jester_UBCF_rating@data[5:10,1:10] 
+
+# Predict ratings for all items 
+Jester_UBCF_ratMat <- predict(Jester_UBCF, Jester5k, type="ratingMatrix")
+Jester_UBCF_ratMat@data[5:10,1:10] 
+
+# Recommend top-3 items.
+Jester_UBCF_topN <- predict(Jester_UBCF, Jester5k, type="topNList", n=3)
+getList(Jester_UBCF_topN)[1:5]
+# some users have rated all items and thus the prediction returns "character(0)"
+```
+
+Let's now move on to an item-based collaborative filtering (IBCF) system.
+```{r eval=FALSE}
+Jester_IBCF <- Recommender(Jester5k, method="IBCF", param=list(k=20)) #k: no. similar items
+```
+
+You can revise the previous codes on the UBCF system to predict ratings and top-$N$ items with the new IBCF system. 
+
+Finally, we can perform UV-decomposition on the rating matrix. Strictly speaking, the package implements the idea of matrix factorization using singular value decomposition (SVD), which is numerically more robust and efficient. The key parameter for matrix decomposition (either UV or SVD) is the latent dimension, which is set as 3 in the following code. 
+```{r}
+Jester_UV <- Recommender(Jester5k,method="SVDF", param=list(k=3)) #k: latent dimension
+dim(Jester_UV@model$svd$U)
+dim(Jester_UV@model$svd$V)
+```
+
+
+## Evaluate recommender systems using built-in functions
+
+### Evaluate predicted ratings
+
+We evaluate the three recommendation systems using 10-fold cross-validation. For the test set, 5 items will be given to the recommender algorithm to make the prediction and the rest of items will be held out for computing the error. Below is an example on evaluating UBCF. 
+```{r}
+set.seed(1)
+Jester_eval <- evaluationScheme(Jester5k, method="cross-validation", train=10, given=5)
+Jester_eval
+
+UV_results <- evaluate(Jester_eval, method="UBCF", type="ratings",
+                       param=list(method="pearson", nn=20))
+getResults(UV_results)
+avg(UV_results)
+```
+
+When evaluating multiple recommender algorithms, we can create a list of algorithms and evaluate them all together. The following R code will take a while to complete. 
+
+```{r} 
+algs <- list(
+  "UBCF" = list(name="UBCF", param=list(method="pearson",nn=20)),
+  "IBCF" = list(name="IBCF", param=list(k=5)),
+  "UV"   = list(name="SVDF", param=list(k=5))
+)
+Jester_results <- evaluate(Jester_eval, algs, type="ratings")
+
+# getResults(Jester_results$UBCF)
+# getResults(Jester_results$IBCF)
+# getResults(Jester_results$UV)
+avg(Jester_results)
+plot(Jester_results, legend="topright")
+```
+
+### Evaluate top-N recommendations
+
+Given our data is a real rating matrix, we need to convert it into a binary matrix in order to evaluate if the top-$N$ recommended items will be liked by the user. This conversion is achieved by using the argument `goodRating`, which is a threshold on the actual ratings; values at or above the threshold is considered to be liked by the user and vice versa. In other words, an item in the topNList is considered a true positive if it has a rating of `goodRating` or better in the observed data.
+
+```{r}
+Jester_eval2 <- evaluationScheme(Jester5k, method="cross", k=5, given=-5,
+                                 goodRating=0) 
+Jester_eval2
+Jester_results2 <- evaluate(Jester_eval2, algs, type="topNList",
+                            n=c(1,3,5,10))
+# n: the number of items in top-N list
+
+avg(Jester_results2)
+plot(Jester_results2, annotate=1, legend="topleft")
+```
+
+The above example covers collaborative filtering recommender systems. If you are interested in content-based recommender systems, the following example may be studied: 
+https://michael.hahsler.net/other_courses/ICMA_Recommendation_Tools/code/content-based.html#calculate-content-based-item-similarity
+
+
+<!--chapter:end:01-Jester5k.Rmd-->
+

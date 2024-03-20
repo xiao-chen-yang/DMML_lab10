@@ -1,0 +1,68 @@
+---
+title: "STATS5099 Data Mining and Machine Learning"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+biblio-style: apalike
+link-citations: yes
+---
+
+```{r setup, include = FALSE}
+library(webexercises)
+library(tinytex)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+knitr::opts_chunk$set(echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE)
+
+library(stats)
+library(cluster)
+```
+
+
+```{r include=FALSE, echo=FALSE}
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
+
+
+# Welcome to DMML Lab 10
+
+In week 10, we studied recommendation systems. In today's lab, we will look at how to build a user-based collaborative filtering system, an item-based collaborative filtering system, and UV decomposition-based system. In addition, we will evaluate these three recommendation systems for both rating predictions and top-$N$ recommendations. 
+
+## Build recommender systems and make predictions
+
+We will use the R package `recommenderlab` to build the collaborative filtering recommendation system. The package supports multiple algorithms. You can find out the names of each method and the associated parameters as follows: 
+```{r eval=FALSE}
+library(recommenderlab)
+# Methods and default parameters in the package
+recommenderRegistry$get_entry_names()
+# IBCF stands for item-based collaborative filtering
+# UBCF stands for user-based collaborative filtering
+# SVDF stands for funk singular value decomposition (UV-decomposition-based collaborative filtering)
+recommenderRegistry$get_entry("UBCF",dataType="realRatingMatrix")
+# Make sure you understand the parameters: methods, nn, weighted and normalize
+# other options of methods: "cosine", "pearson", "jaccard"
+```
+
+## Evaluate recommender systems 
+
+To evaluate the recommender systems, we first need to clearly define the evaluation scheme, such as using training-test split or cross-validation, the parameters associated with training-test split (i.e. the proportion of training data) or cross-validation (i.e. the number of folds), the number of item withheld in the test set.  
+
+```{r eval=FALSE}
+evaluationScheme(data, method, train, k, given, goodRating)
+# method: split, cross-validation
+# train: fraction of the data set used for training
+# k: number of folds to run the evaluation
+# given: single number of items given for evaluation. Positive values implement the given-x protocol, and negative values implement the all-but-x protocol. 
+# goodRating: threshold at which ratings are considered good for evaluation. E.g., with goodRating=3 all items with actual user rating of greater or equal 3 are considered positives in the evaluation process.
+```
+
+After that, we can evaluate a single or a list of recommendation systems. In particular, for the task of predicting ratings, MAE (mean absolute error), MSE (mean squared error) and RMSE (root mean squared error) are calculated. For the task of predicting the top-$N$ items, binary classification metrics, such as precision, recall, true positive rate (TPR), false positive rate (FPR), are returned. 
+
+```{r eval=FALSE}
+evaluate(evaluationScheme, method, type)
+# type: "ratings", "topNList"
+```
+
