@@ -15,8 +15,7 @@ library(knitr)
 library(kableExtra)
 knitr::opts_chunk$set(echo=TRUE, eval=TRUE, warning=FALSE, message=FALSE)
 
-library(stats)
-library(cluster)
+library(reticulate)
 ```
 
 
@@ -29,40 +28,43 @@ knitr::write_bib(c(
 
 # Welcome to DMML Lab 10
 
-In week 10, we studied recommendation systems. In today's lab, we will look at how to build a user-based collaborative filtering system, an item-based collaborative filtering system, and UV decomposition-based system. In addition, we will evaluate these three recommendation systems for both rating predictions and top-$N$ recommendations. 
+In week 10, we studied convolutional neural networks (CNNs) for image classification. In today's lab, we will revise the CNN architecture and apply it to MNIST, a database of handwritten digits. 
 
-## Build recommender systems and make predictions
+## Convolutional neural networks
 
-We will use the R package `recommenderlab` to build the collaborative filtering recommendation system. The package supports multiple algorithms. You can find out the names of each method and the associated parameters as follows: 
-```{r eval=FALSE}
-library(recommenderlab)
-# Methods and default parameters in the package
-recommenderRegistry$get_entry_names()
-# IBCF stands for item-based collaborative filtering
-# UBCF stands for user-based collaborative filtering
-# SVDF stands for funk singular value decomposition (UV-decomposition-based collaborative filtering)
-recommenderRegistry$get_entry("UBCF",dataType="realRatingMatrix")
-# Make sure you understand the parameters: methods, nn, weighted and normalize
-# other options of methods: "cosine", "pearson", "jaccard"
+In Lecture Note 10, we have constructed a CNN which consists of two convolutional layer, each followed by a rectified linear (ReLU) activation function and a max-pooling layer. After flatting patches into vectors, two fully-connected feedforward neural networks are applied. The code for such a CNN is reproduced below.
+
+```{python}
+import torch.nn as nn
+import torch.nn.functional as F
+
+class Net(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Conv2d(3, 6, 5)
+        # 1st arg: in_channels = 3 (for RGB channels),
+        # 2nd arg: number of filters = 6
+        # 3rd arg: kernel size = 5
+        self.pool = nn.MaxPool2d(2, 2)
+        # 1st arg: kernel size = 2
+        # 2nd arg: stride = 2
+        self.conv2 = nn.Conv2d(6, 16, 5)
+        self.fc1 = nn.Linear(16 * 5 * 5, 120)
+        # 1st arg: input dimensionality; 16 channels * 5x5 patches
+        # 2nd arg: output dimensionality
+        self.fc2 = nn.Linear(120, 84)
+        self.fc3 = nn.Linear(84, 10)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = torch.flatten(x, 1) # flatten all dimensions except batch
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+
+net = Net()
 ```
 
-## Evaluate recommender systems 
-
-To evaluate the recommender systems, we first need to clearly define the evaluation scheme, such as using training-test split or cross-validation, the parameters associated with training-test split (i.e. the proportion of training data) or cross-validation (i.e. the number of folds), the number of item withheld in the test set.  
-
-```{r eval=FALSE}
-evaluationScheme(data, method, train, k, given, goodRating)
-# method: split, cross-validation
-# train: fraction of the data set used for training
-# k: number of folds to run the evaluation
-# given: single number of items given for evaluation. Positive values implement the given-x protocol, and negative values implement the all-but-x protocol. 
-# goodRating: threshold at which ratings are considered good for evaluation. E.g., with goodRating=3 all items with actual user rating of greater or equal 3 are considered positives in the evaluation process.
-```
-
-After that, we can evaluate a single or a list of recommendation systems. In particular, for the task of predicting ratings, MAE (mean absolute error), MSE (mean squared error) and RMSE (root mean squared error) are calculated. For the task of predicting the top-$N$ items, binary classification metrics, such as precision, recall, true positive rate (TPR), false positive rate (FPR), are returned. 
-
-```{r eval=FALSE}
-evaluate(evaluationScheme, method, type)
-# type: "ratings", "topNList"
-```
-
+You may visit the PyTorch website to learn more details on [2D convolution](https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html) or [2D max-pooling](https://pytorch.org/docs/stable/generated/torch.nn.MaxPool2d.html). 
